@@ -1,5 +1,6 @@
 //新增資料
 const formElement = document.querySelector('.js_form')
+let data = {}
 
 formElement.addEventListener('submit', (event) => {
   event.preventDefault()
@@ -104,156 +105,90 @@ formElement.addEventListener('submit', (event) => {
 
 //渲染畫面
 const init = () =>{
-  const ticketList = document.querySelector('.js_ticketList')
-  const filterNum = document.querySelector('.js_filter')
-
-  const _url = 'https://raw.githubusercontent.com/hexschool/js-training/main/travelAPI-lv1.json'
-  let str = ''
-  
+  const _url = 'https://raw.githubusercontent.com/hexschool/js-training/main/travelApi.json'
   axios.get(_url).then((res) => {
-    res.data.forEach((item) => {
-
-      let content = `
-        <li
-          class="col-span-4 bg-white shadow-[0px_3px_6px_#00000029] rounded"
-        >
-          <div class="relative">
-            <img
-              class="block w-full h-[180px] object-cover rounded-t"
-              src="${item.imgUrl}"
-              alt=""
-            />
-            <div
-              class="absolute px-5 py-2 bg-secondary text-white text-xl rounded-r top-0 -translate-y-1/4"
-            >
-            ${item.area}
-            </div>
-            <div
-              class="absolute px-2 py-[5px] bg-primary text-white rounded-r bottom-0 translate-y-1/2"
-            >
-            ${item.rate}
-            </div>
-          </div>
-          <div
-            class="flex flex-col justify-between h-[calc(100%_-_180px)] p-5"
-          >
-            <div>
-              <h3
-                class="text-primary text-2xl font-medium pb-1 mb-4 border-b-2 border-b-primary"
-              >
-              ${item.name}
-              </h3>
-              <p class="mb-5">
-              ${item.description}
-              </p>
-            </div>
-            <div class="flex justify-between items-center">
-              <p class="text-primary">
-                <span class="material-symbols-outlined align-middle mr-[6px]">
-                  error
-                </span>
-                剩下最後 <span id="ticketCard-num"> ${item.group} </span> 組
-              </p>
-              <p class="flex items-center text-primary">
-                TWD
-                <span
-                  class="font-roboto text-[32px] ml-1"
-                  id="ticketCard-price"
-                >
-                  $${item.price}
-                </span>
-              </p>
-            </div>
-          </div>
-        </li>
-      `
-      str += content
-
-      ticketList.innerHTML = str
-      filterNum.innerHTML = `搜尋資料為 ${res.data.length} 筆`
-    })
+    data = res.data.data
+    render(data)
   }).catch(()=>{
     console.log('error')
   })
-
-  
-  
 }
 init();
 
 
-//
-const filterGroup = document.querySelector('.js_filterGroup')
-
-
-filterGroup.addEventListener('change', (e) => {
+const render = (arr) => {
+  const ticketList = document.querySelector('.js_ticketList')
   const filterNum = document.querySelector('.js_filter')
-  
+  let str = ''
+  arr.forEach((item)=>{
+
+    let content = `
+      <li
+        class="col-span-4 bg-white shadow-[0px_3px_6px_#00000029] rounded"
+      >
+        <div class="relative">
+          <img
+            class="block w-full h-[180px] object-cover rounded-t"
+            src="${item.imgUrl}"
+            alt=""
+          />
+          <div
+            class="absolute px-5 py-2 bg-secondary text-white text-xl rounded-r top-0 -translate-y-1/4"
+          >
+          ${item.area}
+          </div>
+          <div
+            class="absolute px-2 py-[5px] bg-primary text-white rounded-r bottom-0 translate-y-1/2"
+          >
+          ${item.rate}
+          </div>
+        </div>
+        <div
+          class="flex flex-col justify-between h-[calc(100%_-_180px)] p-5"
+        >
+          <div>
+            <h3
+              class="text-primary text-2xl font-medium pb-1 mb-4 border-b-2 border-b-primary"
+            >
+            ${item.name}
+            </h3>
+            <p class="mb-5">
+            ${item.description}
+            </p>
+          </div>
+          <div class="flex justify-between items-center">
+            <p class="text-primary">
+              <span class="material-symbols-outlined align-middle mr-[6px]">
+                error
+              </span>
+              剩下最後 <span id="ticketCard-num"> ${item.group} </span> 組
+            </p>
+            <p class="flex items-center text-primary">
+              TWD
+              <span
+                class="font-roboto text-[32px] ml-1"
+                id="ticketCard-price"
+              >
+                $${item.price}
+              </span>
+            </p>
+          </div>
+        </div>
+      </li>
+    `
+    str += content
+  })
+  ticketList.innerHTML = str
+  filterNum.innerHTML = `搜尋資料為 ${arr.length} 筆`
+}
+
+
+const filterGroup = document.querySelector('.js_filterGroup')
+filterGroup.addEventListener('change', (e) => {
   if(e.target.value == '全部地區'){init()}else{
-    const ticketList = document.querySelector('.js_ticketList')
     const newData = data.filter((item) => {
       return item.area == e.target.value
     })
-    
-    let str = ''
-    newData.forEach((item) => {
-      let content = `
-        <li
-          class="col-span-4 bg-white shadow-[0px_3px_6px_#00000029] rounded"
-        >
-          <div class="relative">
-            <img
-              class="block w-full h-[180px] object-cover rounded-t"
-              src="${item.imgUrl}"
-              alt=""
-            />
-            <div
-              class="absolute px-5 py-2 bg-secondary text-white text-xl rounded-r top-0 -translate-y-1/4"
-            >
-            ${item.area}
-            </div>
-            <div
-              class="absolute px-2 py-[5px] bg-primary text-white rounded-r bottom-0 translate-y-1/2"
-            >
-            ${item.rate}
-            </div>
-          </div>
-          <div
-            class="flex flex-col justify-between h-[calc(100%_-_180px)] p-5"
-          >
-            <div>
-              <h3
-                class="text-primary text-2xl font-medium pb-1 mb-4 border-b-2 border-b-primary"
-              >
-              ${item.name}
-              </h3>
-              <p class="mb-5">
-              ${item.description}
-              </p>
-            </div>
-            <div class="flex justify-between items-center">
-              <p class="text-primary">
-                <span class="material-symbols-outlined align-middle mr-[6px]">
-                  error
-                </span>
-                剩下最後 <span id="ticketCard-num"> ${item.group} </span> 組
-              </p>
-              <p class="flex items-center text-primary">
-                TWD
-                <span
-                  class="font-roboto text-[32px] ml-1"
-                  id="ticketCard-price"
-                >
-                  $${item.price}
-                </span>
-              </p>
-            </div>
-          </div>
-        </li>
-      `
-      str += content
-    })
-    ticketList.innerHTML = str
-    filterNum.innerHTML = `搜尋資料為 ${newData.length} 筆`
+    render(newData)
   }
 })
