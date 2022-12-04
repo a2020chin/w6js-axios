@@ -2,6 +2,7 @@
 
 //新增資料
 var formElement = document.querySelector('.js_form');
+var data = {};
 formElement.addEventListener('submit', function (event) {
   event.preventDefault();
   var name = formElement[0].value.trim();
@@ -97,42 +98,38 @@ formElement.addEventListener('submit', function (event) {
 }); //渲染畫面
 
 var init = function init() {
-  var ticketList = document.querySelector('.js_ticketList');
-  var filterNum = document.querySelector('.js_filter');
-  var _url = 'https://raw.githubusercontent.com/hexschool/js-training/main/travelAPI-lv1.json';
-  var str = '';
+  var _url = 'https://raw.githubusercontent.com/hexschool/js-training/main/travelApi.json';
   axios.get(_url).then(function (res) {
-    res.data.forEach(function (item) {
-      var content = "\n        <li\n          class=\"col-span-4 bg-white shadow-[0px_3px_6px_#00000029] rounded\"\n        >\n          <div class=\"relative\">\n            <img\n              class=\"block w-full h-[180px] object-cover rounded-t\"\n              src=\"".concat(item.imgUrl, "\"\n              alt=\"\"\n            />\n            <div\n              class=\"absolute px-5 py-2 bg-secondary text-white text-xl rounded-r top-0 -translate-y-1/4\"\n            >\n            ").concat(item.area, "\n            </div>\n            <div\n              class=\"absolute px-2 py-[5px] bg-primary text-white rounded-r bottom-0 translate-y-1/2\"\n            >\n            ").concat(item.rate, "\n            </div>\n          </div>\n          <div\n            class=\"flex flex-col justify-between h-[calc(100%_-_180px)] p-5\"\n          >\n            <div>\n              <h3\n                class=\"text-primary text-2xl font-medium pb-1 mb-4 border-b-2 border-b-primary\"\n              >\n              ").concat(item.name, "\n              </h3>\n              <p class=\"mb-5\">\n              ").concat(item.description, "\n              </p>\n            </div>\n            <div class=\"flex justify-between items-center\">\n              <p class=\"text-primary\">\n                <span class=\"material-symbols-outlined align-middle mr-[6px]\">\n                  error\n                </span>\n                \u5269\u4E0B\u6700\u5F8C <span id=\"ticketCard-num\"> ").concat(item.group, " </span> \u7D44\n              </p>\n              <p class=\"flex items-center text-primary\">\n                TWD\n                <span\n                  class=\"font-roboto text-[32px] ml-1\"\n                  id=\"ticketCard-price\"\n                >\n                  $").concat(item.price, "\n                </span>\n              </p>\n            </div>\n          </div>\n        </li>\n      ");
-      str += content;
-      ticketList.innerHTML = str;
-      filterNum.innerHTML = "\u641C\u5C0B\u8CC7\u6599\u70BA ".concat(res.data.length, " \u7B46");
-    });
+    data = res.data.data;
+    render(data);
   })["catch"](function () {
     console.log('error');
   });
 };
 
-init(); //
+init();
+
+var render = function render(arr) {
+  var ticketList = document.querySelector('.js_ticketList');
+  var filterNum = document.querySelector('.js_filter');
+  var str = '';
+  arr.forEach(function (item) {
+    var content = "\n      <li\n        class=\"col-span-4 bg-white shadow-[0px_3px_6px_#00000029] rounded\"\n      >\n        <div class=\"relative\">\n          <img\n            class=\"block w-full h-[180px] object-cover rounded-t\"\n            src=\"".concat(item.imgUrl, "\"\n            alt=\"\"\n          />\n          <div\n            class=\"absolute px-5 py-2 bg-secondary text-white text-xl rounded-r top-0 -translate-y-1/4\"\n          >\n          ").concat(item.area, "\n          </div>\n          <div\n            class=\"absolute px-2 py-[5px] bg-primary text-white rounded-r bottom-0 translate-y-1/2\"\n          >\n          ").concat(item.rate, "\n          </div>\n        </div>\n        <div\n          class=\"flex flex-col justify-between h-[calc(100%_-_180px)] p-5\"\n        >\n          <div>\n            <h3\n              class=\"text-primary text-2xl font-medium pb-1 mb-4 border-b-2 border-b-primary\"\n            >\n            ").concat(item.name, "\n            </h3>\n            <p class=\"mb-5\">\n            ").concat(item.description, "\n            </p>\n          </div>\n          <div class=\"flex justify-between items-center\">\n            <p class=\"text-primary\">\n              <span class=\"material-symbols-outlined align-middle mr-[6px]\">\n                error\n              </span>\n              \u5269\u4E0B\u6700\u5F8C <span id=\"ticketCard-num\"> ").concat(item.group, " </span> \u7D44\n            </p>\n            <p class=\"flex items-center text-primary\">\n              TWD\n              <span\n                class=\"font-roboto text-[32px] ml-1\"\n                id=\"ticketCard-price\"\n              >\n                $").concat(item.price, "\n              </span>\n            </p>\n          </div>\n        </div>\n      </li>\n    ");
+    str += content;
+  });
+  ticketList.innerHTML = str;
+  filterNum.innerHTML = "\u641C\u5C0B\u8CC7\u6599\u70BA ".concat(arr.length, " \u7B46");
+};
 
 var filterGroup = document.querySelector('.js_filterGroup');
 filterGroup.addEventListener('change', function (e) {
-  var filterNum = document.querySelector('.js_filter');
-
   if (e.target.value == '全部地區') {
     init();
   } else {
-    var ticketList = document.querySelector('.js_ticketList');
     var newData = data.filter(function (item) {
       return item.area == e.target.value;
     });
-    var str = '';
-    newData.forEach(function (item) {
-      var content = "\n        <li\n          class=\"col-span-4 bg-white shadow-[0px_3px_6px_#00000029] rounded\"\n        >\n          <div class=\"relative\">\n            <img\n              class=\"block w-full h-[180px] object-cover rounded-t\"\n              src=\"".concat(item.imgUrl, "\"\n              alt=\"\"\n            />\n            <div\n              class=\"absolute px-5 py-2 bg-secondary text-white text-xl rounded-r top-0 -translate-y-1/4\"\n            >\n            ").concat(item.area, "\n            </div>\n            <div\n              class=\"absolute px-2 py-[5px] bg-primary text-white rounded-r bottom-0 translate-y-1/2\"\n            >\n            ").concat(item.rate, "\n            </div>\n          </div>\n          <div\n            class=\"flex flex-col justify-between h-[calc(100%_-_180px)] p-5\"\n          >\n            <div>\n              <h3\n                class=\"text-primary text-2xl font-medium pb-1 mb-4 border-b-2 border-b-primary\"\n              >\n              ").concat(item.name, "\n              </h3>\n              <p class=\"mb-5\">\n              ").concat(item.description, "\n              </p>\n            </div>\n            <div class=\"flex justify-between items-center\">\n              <p class=\"text-primary\">\n                <span class=\"material-symbols-outlined align-middle mr-[6px]\">\n                  error\n                </span>\n                \u5269\u4E0B\u6700\u5F8C <span id=\"ticketCard-num\"> ").concat(item.group, " </span> \u7D44\n              </p>\n              <p class=\"flex items-center text-primary\">\n                TWD\n                <span\n                  class=\"font-roboto text-[32px] ml-1\"\n                  id=\"ticketCard-price\"\n                >\n                  $").concat(item.price, "\n                </span>\n              </p>\n            </div>\n          </div>\n        </li>\n      ");
-      str += content;
-    });
-    ticketList.innerHTML = str;
-    filterNum.innerHTML = "\u641C\u5C0B\u8CC7\u6599\u70BA ".concat(newData.length, " \u7B46");
+    render(newData);
   }
 });
 //# sourceMappingURL=all.js.map
